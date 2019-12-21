@@ -221,6 +221,7 @@ pub struct SerializingSection<'a> {
     lang: &'a str,
     assets: &'a [String],
     pages: Vec<SerializingPage<'a>>,
+    orphan_pages: Vec<SerializingPage<'a>>,
     subsections: Vec<&'a str>,
     translations: Vec<TranslatedContent<'a>>,
 }
@@ -228,10 +229,15 @@ pub struct SerializingSection<'a> {
 impl<'a> SerializingSection<'a> {
     pub fn from_section(section: &'a Section, library: &'a Library) -> Self {
         let mut pages = Vec::with_capacity(section.pages.len());
+        let mut orphan_pages = Vec::with_capacity(section.pages.len());
         let mut subsections = Vec::with_capacity(section.subsections.len());
 
         for k in &section.pages {
             pages.push(library.get_page_by_key(*k).to_serialized_basic(library));
+        }
+
+        for k in &library.get_all_orphan_pages() {
+            orphan_pages.push(k.to_serialized_basic(library));
         }
 
         for k in &section.subsections {
@@ -261,6 +267,7 @@ impl<'a> SerializingSection<'a> {
             assets: &section.serialized_assets,
             lang: &section.lang,
             pages,
+            orphan_pages,
             subsections,
             translations,
         }
@@ -298,6 +305,7 @@ impl<'a> SerializingSection<'a> {
             assets: &section.serialized_assets,
             lang: &section.lang,
             pages: vec![],
+            orphan_pages: vec![],
             subsections,
             translations,
         }

@@ -39,6 +39,8 @@ pub struct Section {
     pub serialized_assets: Vec<String>,
     /// All direct pages of that section
     pub pages: Vec<DefaultKey>,
+    /// All orphan pages under this section
+    pub orphan_pages: Vec<DefaultKey>,
     /// All pages that cannot be sorted in this section
     pub ignored_pages: Vec<DefaultKey>,
     /// The list of parent sections
@@ -86,6 +88,7 @@ impl Section {
             serialized_assets: vec![],
             content: "".to_string(),
             pages: vec![],
+            orphan_pages: vec![],
             ignored_pages: vec![],
             subsections: vec![],
             toc: vec![],
@@ -218,6 +221,7 @@ impl Section {
         context.insert("current_url", &self.permalink);
         context.insert("current_path", &self.path);
         context.insert("section", &self.to_serialized(library));
+        context.insert("content", &self.to_serialized(library));
         context.insert("lang", &self.lang);
         context.insert("toc", &self.toc);
 
@@ -269,6 +273,7 @@ impl Default for Section {
             serialized_assets: vec![],
             content: "".to_string(),
             pages: vec![],
+            orphan_pages: vec![],
             ignored_pages: vec![],
             subsections: vec![],
             toc: vec![],
